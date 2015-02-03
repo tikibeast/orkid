@@ -36,7 +36,7 @@ def DefaultBuildEnv( env, prj ):
 		DEFS += "LINUX ORK_LINUX"
 	CCFLG = ' '
 	CXXFLG = ' '
-	LIBS = "m rt tbb pthread c++"
+	LIBS = "m rt tbb pthread boost_regex "
 	LIBPATH = ' . '
 	if USE_DEBUG_CXX:
 		LIBPATH += ' /usr/lib/x86_64-linux-gnu/debug '
@@ -45,27 +45,28 @@ def DefaultBuildEnv( env, prj ):
 
 	LINK = ''
 	##
-	#clang = "gcc-4.7"
-	#clangpp = "g++-4.7"
-	clang = "clang"
-	clangpp = "clang++"
+	clang = "gcc-4.8"
+	clangpp = "g++-4.8"
+	#clang = "clang"
+	#clangpp = "clang++"
 	env.Replace( CXX = clangpp, CC = clang )
 	env.Replace( LINK = clangpp )
 	env.Replace( CPPDEFINES = string.split(DEFS) )
 	env.Replace( CCFLAGS = string.split(CCFLG) )
 	env.Replace( CXXFLAGS = string.split(CXXFLG) )
-	env.Replace( CPPPATH  = [ '.' ] )
+	env.Replace( CPPPATH  = [ '.' ,"/opt/boost153/"] )
 	env.Replace( LINKFLAGS=string.split(LINK) )
 	env.Replace( LIBS=string.split(LIBS) )
-	env.Replace( LIBPATH=string.split(LIBPATH) )
+	env.Replace( LIBPATH=string.split(LIBPATH+" /opt/boost153/libs/ ") )
 
 	CxFLG = '-fPIE -fno-common -fno-strict-aliasing -g -Wno-switch-enum '
 	CxFLG += '-Imkspecs/linux-g++-64 -D_REENTRANT -DQT_NO_EXCEPTIONS -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -DQT_GUI_LIB -DQT_CORE_LIB '
 	prj.XCCFLG += CxFLG
-	prj.XCXXFLG += CxFLG + " --std=c++11 --stdlib=libc++ -fexceptions "
+	prj.XCXXFLG += CxFLG + " --std=c++11 -fexceptions -fpermissive "
 
 	prj.CompilerType = 'gcc'
 
-	prj.XLINK = '-m64 -v -g -Wl,-rpath,/projects/redux/stage/lib'
+#prj.XLINK = '-m64 -v -g -Wl,-rpath,/projects/redux/stage/lib'
+	prj.XLINK = '-m64 -v -g'
 
 

@@ -242,8 +242,17 @@ void GlFrameBufferInterface::SetRtGroup( RtGroup* Base )
 		// on xbox, happens after resolve
 		////////////////////////////////////////////////
 		SetAsRenderTarget();
+
+		if( mCurrentRtGroup )
+			glPopDebugGroup();
+
 		mCurrentRtGroup = 0;
+
 		return;
+	}
+	else
+	{
+		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION,1,-1,"RtGroup" );
 	}
 	
 	//////////////////////////////////////////////////
@@ -299,6 +308,13 @@ void GlFrameBufferInterface::SetRtGroup( RtGroup* Base )
 			GLTextureObject* ptexOBJ = new GLTextureObject;
 			GL_ERRORCHECK();
 			glGenTextures( 1, (GLuint *) & FboObj->mTEX[it] );
+			//glBindTexture( GL_TEXTURE_2D, & FboObj->mTEX[it] );
+
+			ork::fxstring<256> fxs;
+			fxs.format( "FBO<%p>/Rt<%d>", FboObj, it );
+
+			glObjectLabel( GL_TEXTURE, FboObj->mTEX[it], -1, "FBOTEX" );
+
 			GL_ERRORCHECK();
 			ptexOBJ->mObject = FboObj->mTEX[it];
 			//////////////////////////////////////////

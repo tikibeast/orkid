@@ -683,7 +683,8 @@ ent::SceneInst* SceneEditorVP::GetSceneInst()
 //  this may go to the onscreen or pickbuffer targets
 ///////////////////////////////////////////////////////////////////////////////
 
-#define GL_ERRORCHECK() { int iErr = GetGlError(); OrkAssert( iErr==0 ); }
+//#define GL_ERRORCHECK() { int iErr = GetGlError(); OrkAssert( iErr==0 ); }
+#define GL_ERRORCHECK() {}
 
 void SceneEditorVP::RenderSDLD( lev2::RenderContextFrameData & FrameData )
 {

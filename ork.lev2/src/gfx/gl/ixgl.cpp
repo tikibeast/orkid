@@ -140,7 +140,7 @@ PFNGLPATCHPARAMETERIPROC GLPPI = nullptr;
 static int gl3_context_attribs[] =
 {
     GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
-    GLX_CONTEXT_MINOR_VERSION_ARB, 0,
+    GLX_CONTEXT_MINOR_VERSION_ARB, 3,
     GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
 #if 1
     GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_DEBUG_BIT_ARB,
@@ -186,13 +186,17 @@ void GfxTargetGL::GLinit()
 	orkprintf( "INITOPENGL\n" );
 	
 	GLXFBConfig fb_config;
-	//XInitThreads();
+	XInitThreads();
 	Display* x_dpy = XOpenDisplay(0);
 	assert(x_dpy!=0);
 	int x_screen = 0; // screen?
 	int inumconfigs = 0;
+
+    ////////////////////////////////////////
 	GlIxPlatformObject::gFbConfigs = glXChooseFBConfig(x_dpy,x_screen,g_glx_win_attrlist,&inumconfigs);
-	printf( "gFbConfigs<%p>\n", (void*) GlIxPlatformObject::gFbConfigs );
+    ////////////////////////////////////////
+
+    printf( "gFbConfigs<%p>\n", (void*) GlIxPlatformObject::gFbConfigs );
 	printf( "NUMCONFIGS<%d>\n", inumconfigs );
 	assert(inumconfigs>0);
 
@@ -233,36 +237,33 @@ void GfxTargetGL::GLinit()
     // create oldschool context just to determine if the newschool method
     //  is available
 
-    GLXContext old_school = glXCreateContext(x_dpy, GlIxPlatformObject::gVisInfo, nullptr, GL_TRUE);
+    //GLXContext old_school = glXCreateContext(x_dpy, GlIxPlatformObject::gVisInfo, nullptr, GL_TRUE);
     
-    GLXCCA =  (glXcca_proc_t) glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
+    GLXCCA =  (glXcca_proc_t) glXGetProcAddressARB((const GLubyte*)"glXCreateContextAttribsARB");
 
     GLPPI = (PFNGLPATCHPARAMETERIPROC) glXGetProcAddress((const GLubyte*)"glPatchParameteri");
 
     assert( GLPPI!=nullptr );
 
-    glXMakeCurrent(x_dpy, 0, 0);
-    glXDestroyContext(x_dpy, old_school);
+
+    //glXMakeContextCurrent(x_dpy, 0, 0, 0);
+    //glXDestroyContext(x_dpy, old_school);
 
     if (GLXCCA == nullptr)
     {
         printf( "glXCreateContextAttribsARB entry point not found. Aborting.\n");
         assert(false);
     }
-    
-
-
     ///////////////////////////////////////////////////////////////
 
-
     GlIxPlatformObject::gShareMaster = GLXCCA(x_dpy, gl_this_fb_config, NULL, true, gl3_context_attribs);
+    glXMakeContextCurrent(x_dpy, dummy_win, dummy_win, GlIxPlatformObject::gShareMaster);
 
-    glXMakeCurrent(x_dpy, dummy_win, GlIxPlatformObject::gShareMaster);
-
+    ///////////////////////////////////////////////////////////////
+    
     assert(GlIxPlatformObject::gShareMaster!=nullptr);
 
 	printf( "display<%p> screen<%d> rootwin<%d> numcfgs<%d> gsharemaster<%p>\n", x_dpy, x_screen, g_rootwin, inumconfigs, GlIxPlatformObject::gShareMaster );
-
 
 	for( int i=0; i<1; i++ )
 	{
@@ -277,6 +278,7 @@ void GfxTargetGL::GLinit()
 		mLoadTokens.push( (void*) loadctx );
 	}
 
+    //assert(false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -330,15 +332,20 @@ void GfxTargetGL::InitializeContext( GfxWindow *pWin, CTXBASE* pctxbase  )
 	XVisualInfo* vinfo = GlIxPlatformObject::gVisInfo;
 	///////////////////////
 
-	printf( "GfxTargetGL<%p> dpy<%p> screen<%d> vis<%p>\n", this, x_dpy, x_screen, vinfo );
 
 	plato->mGlxContext = GLXCCA(x_dpy,gl_this_fb_config,plato->gShareMaster,GL_TRUE,gl3_context_attribs);
-
 	plato->mDisplay = x_dpy;
 	plato->mXWindowId = pctxW->winId();
-	printf( "ctx<%p>\n", plato->mGlxContext );
+	printf( "yoz ctx<%p>\n", plato->mGlxContext );
+	printf( "yoz GfxTargetGL<%p> dpy<%p> screen<%d> vis<%p> xid<%p> ctx<%p>\n", this, x_dpy, x_screen, vinfo, plato->mXWindowId, plato->mGlxContext);
+
 
 	MakeCurrentContext();
+
+    GLXContext yo = glXGetCurrentContext();
+    printf( "yo<%p>\n", (void*) yo );
+
+   // assert(false);
 
 	mFbI.SetThisBuffer( pWin );
 	mFbI.SetOffscreenTarget( false );
@@ -404,8 +411,9 @@ void GfxTargetGL::MakeCurrentContext( void )
 	OrkAssert(plato);	
 	if( plato )
 	{
-		bool bOK = glXMakeCurrent(plato->mDisplay,plato->mXWindowId,plato->mGlxContext);
-	//	OrkAssert(bOK);
+		printf( "yoz-mc DPY<%p> xid<%p> cid<%p>\n", (void*) plato->mDisplay,(void*) plato->mXWindowId,(void*) plato->mGlxContext );
+		bool bOK = glXMakeContextCurrent(plato->mDisplay,plato->mXWindowId,plato->mXWindowId,plato->mGlxContext);
+		OrkAssert(bOK);
 	}
 }
 
@@ -417,7 +425,8 @@ void GfxTargetGL::SwapGLContext( CTXBASE *pCTFL )
 	OrkAssert(plato);	
 	if( plato && (plato->mXWindowId>0) )
 	{
-		glXMakeCurrent(plato->mDisplay,plato->mXWindowId,plato->mGlxContext);
+		printf( "yoz-sw DPY<%p> xid<%p> cid<%p>\n", (void*) plato->mDisplay,(void*) plato->mXWindowId,(void*) plato->mGlxContext );
+		glXMakeContextCurrent(plato->mDisplay,plato->mXWindowId,plato->mXWindowId,plato->mGlxContext);
 		glXSwapBuffers(plato->mDisplay,plato->mXWindowId);
 	}
 
@@ -438,7 +447,7 @@ void* GfxTargetGL::DoBeginLoad()
 
 	loadctx->mPushedContext = glXGetCurrentContext();
 
-	bool bOK = glXMakeCurrent(loadctx->mDisplay,loadctx->mWindow,loadctx->mGlxContext);
+	bool bOK = glXMakeContextCurrent(loadctx->mDisplay,loadctx->mWindow,loadctx->mWindow,loadctx->mGlxContext);
 
 	printf( "BEGINLOAD loadctx<%p> glx<%p> OK<%d>\n", loadctx,loadctx->mGlxContext,int(bOK));
 

@@ -47,7 +47,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-#if 1 //defined( _DEBUG )
+#if 0 //defined( _DEBUG )
 #define GL_ERRORCHECK() { GLenum iErr = GetGlError(); OrkAssert( iErr==GL_NO_ERROR ); }
 #else
 #define GL_ERRORCHECK() {}

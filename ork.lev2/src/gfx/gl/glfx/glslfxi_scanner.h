@@ -1,6 +1,6 @@
 #pragma once
 
-#include <regex>
+#include <boost/regex.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 namespace ork { namespace lev2 {
@@ -77,7 +77,7 @@ struct GlslFxScanViewRegex : public GlslFxScanViewFilter
 
 	bool Test(const token& t) override;
 
-	std::regex mRegex;
+	boost::regex mRegex;
 	bool mInverse;
 };
 
@@ -107,7 +107,7 @@ struct GlslFxScannerView
 	std::vector<int> mIndices;
 	GlslFxScanViewFilter& mFilter;
 	const GlslFxScanner& mScanner;
-	std::regex mBlockTerminators;
+	boost::regex mBlockTerminators;
 
 	size_t mStart; // will point to lev0 { if exists in blockmode
 	size_t mEnd; // will point to lev0 } if exists in blockmode

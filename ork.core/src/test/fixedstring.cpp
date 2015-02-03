@@ -6,7 +6,7 @@
 #include <set>
 
 using namespace ork;
-
+#if 0
 TEST(fixedstringTestFormat)
 {
 	FixedString<4096> the_string;
@@ -91,3 +91,4 @@ TEST(fixedstringMixedConcat)
 
 	CHECK(0==strcmp(a.c_str(),"whatupyo")); 
 }
+#endif

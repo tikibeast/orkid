@@ -4,7 +4,6 @@
 #include "glslfxi.h"
 #include "glslfxi_scanner.h"
 #include <ork/file/file.h>
-#include <regex>
 #include <stdlib.h>
 
 
@@ -20,7 +19,8 @@ GlslFxScanViewRegex::GlslFxScanViewRegex(const char* pr,bool inverse)
 }
 bool GlslFxScanViewRegex::Test(const token& t)
 {
-	bool match = std::regex_match(t.text,mRegex);
+	auto copy_of_t = t.text;
+	bool match = boost::regex_match(copy_of_t,mRegex);
 	return match xor mInverse;
 }
 
@@ -71,7 +71,7 @@ void GlslFxScannerView::ScanBlock( size_t is )
 
 	for( size_t i=is; i<max_t; i++ )
 	{	const token& t = mScanner.tokens[i];
-		bool is_term = std::regex_match(t.text,mBlockTerminators);
+		bool is_term = boost::regex_match(t.text,mBlockTerminators);
 		
 		bool is_open = ( t.text == "{" );
 		bool is_close = ( t.text == "}" );

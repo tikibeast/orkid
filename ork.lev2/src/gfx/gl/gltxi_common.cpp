@@ -831,6 +831,9 @@ void GlTextureInterface::LoadDDSTextureMainThreadPart(const GlTexLoadReq& req)
 
 	glGenTextures( 1, & pTEXOBJ->mObject );
 	glBindTexture( TARGET, pTEXOBJ->mObject );
+
+	
+	glObjectLabel( GL_TEXTURE, pTEXOBJ->mObject, -1, TextureFile.msFileName.c_str() );
 	GL_ERRORCHECK();
 	
 	//printf( "  tex<%s> ORKTEXOBJECT<%p>\n", TextureFile.msFileName.c_str(), pTEXOBJ );

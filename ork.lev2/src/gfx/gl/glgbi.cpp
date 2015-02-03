@@ -14,6 +14,8 @@
 #include <ork/lev2/ui/ui.h>
 //#include <ork/lev2/gfx/modeler/modeler_base.h>
 
+#include <GL/glx.h>
+
 ////////////////////////////////////////////////////////////////////////////////
 
 static const bool USEVBO = true;
@@ -193,7 +195,10 @@ struct GLVtxBufHandle
 	{
 		VertexBufferBase * pnonconst = const_cast<VertexBufferBase *>( & VBuf );
 
-		printf( "CreateVBO()\n");
+		auto dpy = glXGetCurrentDisplay();
+		auto ctx = glXGetCurrentContext();
+
+		printf( "CreateVBO() dpy<%p> ctx<%p>\n", dpy, (void*) ctx );
 
 		// Create A VBO and copy data into it
 		mVBO = 0;
@@ -207,7 +212,7 @@ struct GLVtxBufHandle
 		GL_ERRORCHECK();
 		int iVBlen = VBuf.GetVtxSize()*VBuf.GetMax();
 
-		//orkprintf( "CreateVBO<%p> len<%d> ID<%d>\n", & VBuf, iVBlen, int(mVBO) );
+		printf( "CreateVBO<%p> len<%d> ID<%d>\n", & VBuf, iVBlen, int(mVBO) );
 		
 		bool bSTATIC = VBuf.IsStatic();
 		
@@ -239,6 +244,8 @@ struct GLVtxBufHandle
 		GL_ERRORCHECK();
 		mBufSize = ibufsize;
 
+		printf( "VBO<%d> BufSize<%d>\n", (int) mVBO, (int) mBufSize );
+		//OrkAssert(false);
 		OrkAssert(mBufSize>0);
 	}
 };

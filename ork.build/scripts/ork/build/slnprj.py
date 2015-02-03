@@ -433,7 +433,7 @@ class Project:
 		lib_dir = '%s/lib' % stage_dir
 		libname = '#stage/lib/%s.so'%self.OutputName
 		self.TargetName = self.OutputName
-		self.CompileEnv.Append( SHLINKFLAGS = string.split("-install_name @executable_path/../lib/lib%s.so" % self.OutputName) )
+		#self.CompileEnv.Append( SHLINKFLAGS = string.split("-install_name @executable_path/../lib/lib%s.so" % self.OutputName) )
 		lib = self.CompileEnv.SharedLibrary( libname, self.GetSources() )
 		env = self.CompileEnv
 		#env.Alias('install', env.Install(lib_dir, lib))
