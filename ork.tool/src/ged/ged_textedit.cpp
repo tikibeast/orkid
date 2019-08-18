@@ -5,9 +5,6 @@
 // see http://www.boost.org/LICENSE_1_0.txt
 ////////////////////////////////////////////////////////////////
 
-#include <orktool/orktool_pch.h>
-
-#include <orktool/qtui/qtui_tool.h>
 #include <orktool/ged/ged.h>
 #include <orktool/ged/ged_delegate.h>
 #include <orktool/ged/ged_io.h>
@@ -28,9 +25,6 @@ GedTextEdit::GedTextEdit( QWidget* parent )
 {
 
 }
-
-void GedTextEdit::editFinished() {}
-void GedTextEdit::canceled() {}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -126,7 +120,7 @@ QString GedInputDialog::getText( const ork::ui::Event& ev, GedItemNode* pnode, c
 {
 	int isx = QCursor::pos().x();
 	int isy = QCursor::pos().y();
-	
+
 	int ixb = (isx-ev.miRawX);
 	int iyb = (isy-ev.miRawY);
 

@@ -48,7 +48,7 @@ if os.path.isfile( ConfigFileName() ):
 	#print ConfigData
 else:
     print "LOCALOPTS: Cannot find %s : using default options" % ConfigFileName()
-    sdkroot = "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk"
+    sdkroot = "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk"
     ConfigData.add_section( "PATHS" )
     ConfigData.set( "PATHS", "XCODEDIR", GetDefault("XCODEDIR", "/Applications/Xcode.app"))
     ConfigData.set( "PATHS", "QT5DIR", GetDefault("QT5DIR", "/usr/local/opt/qt5"))

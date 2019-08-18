@@ -35,7 +35,7 @@ import ork.build.tools.gch as gch
 __all__ = [
   "SetCompilerOptions", "SourceEnumerator", "Project"
   ]
-  
+
 optprj = ""
 optprj = "core lev2 bullet273 ent tool tuio tout lua luabind"
 optset = set()
@@ -69,7 +69,7 @@ class SourceEnumerator:
   def AddFoldersExc(self,folders, excludes, pattern):
     srclist = string.split(folders)
     exclist = string.split(excludes)
-    sourcefiles = common.globber( self.basefolder, pattern, srclist , exclist)      
+    sourcefiles = common.globber( self.basefolder, pattern, srclist , exclist)
     self.sourceobjs  += common.builddir_replace( sourcefiles, self.basefolder, self.BUILD_DIR )
 
   def AddFolders(self,folders, pattern):
@@ -139,7 +139,7 @@ class Project:
   ############################################
 
   def __init__(self,Environment,name):
-    
+
     ARGUMENTS = common.BuildArgs()
     self.arguments = ARGUMENTS
     self.suffix = BuildSuffix(ARGUMENTS)
@@ -192,7 +192,7 @@ class Project:
     ##############
 
     #if os.environ.has_key("PRJ_LIBDIRS"):
-    # self.LibraryPaths += string.split(os.environ["PRJ_LIBDIRS"])      
+    # self.LibraryPaths += string.split(os.environ["PRJ_LIBDIRS"])
 
     self.Libraries = list()
     self.Frameworks = list()
@@ -200,7 +200,9 @@ class Project:
     self.IsLibrary = False
     self.IsExe = False
     self.EmbeddedDevice = False
-        
+
+    self.mocfiles = dict()
+
     ##############
     # common stuff
     ##############
@@ -214,7 +216,7 @@ class Project:
     self.XCFLG = ''
     self.XCCFLG = ''
     self.XCXXFLG = ''
-    
+
     ############################
     # Build Tools/Env Selection
     ############################
@@ -246,7 +248,7 @@ class Project:
     else:
       self.XCCFLG += '-O3' #-Ofast '
       self.XCXXFLG += '-O3' #'-Ofast '
-        
+
   ############################################
 
   def MatchPlatform(self,platform):
@@ -257,7 +259,7 @@ class Project:
         if item==self.PLATFORM:
           return True
     return False
-  
+
   def AddFoldersExc(self,folders, excludes, pattern,platform="any"):
     if self.MatchPlatform(platform):
       self.enumerator.AddFoldersExc(folders,excludes,pattern)
@@ -310,7 +312,7 @@ class Project:
     self.BaseEnv.Append( CPPPATH=[self.basefolder] )
     self.BaseEnv.VariantDir( self.BUILD_DIR, self.basefolder, duplicate=0 )
     self.enumerator = SourceEnumerator(self.basefolder,self.BUILD_DIR);
-    
+
   ############################################
 
   def ComputeSources(self):
@@ -345,7 +347,7 @@ class Project:
 
     self.Libraries = list(self.Libraries)
     self.Frameworks = list(Set(self.Frameworks))
- 
+
     self.SetCompilerOptions( self.XDEFS, self.XCCFLG, self.XCXXFLG, self.IncludePaths, self.LibraryPaths, self.XLINK, self.PLATFORM, self.BUILD )
     self.CompileEnv = self.BaseEnv.Clone()
 
@@ -426,7 +428,7 @@ class Project:
       self.CompileEnv.Alias('install', self.CompileEnv.Install(destdir, basenam))
       for item in deps:
         self.CompileEnv.Install(destdir, item)
-      #self.CompileEnv.Depends(target, env['GchSh'])  
+      #self.CompileEnv.Depends(target, env['GchSh'])
     else:
       self.CompileEnv.Alias('install', self.CompileEnv.Install(destdir, lib))
       bun = lib
@@ -441,8 +443,12 @@ class Project:
     libname = '#stage/lib/%s.so'%self.OutputName
     self.TargetName = self.OutputName
     self.CompileEnv.Append( SHLINKFLAGS = string.split("-install_name @executable_path/../lib/lib%s.so" % self.OutputName) )
-    lib = self.CompileEnv.SharedLibrary( libname, self.GetSources() )
+    sources = self.GetSources()
     env = self.CompileEnv
+    for key in self.mocfiles:
+        val = self.mocfiles[key]
+        sources.append(env.ExplicitMoc5(val,key))
+    lib = self.CompileEnv.SharedLibrary( libname, sources )
     #env.Alias('install', env.Install(lib_dir, lib))
     return lib
 
@@ -495,7 +501,7 @@ class Project:
       self.CompileEnv.Alias('install', self.CompileEnv.Install(destdir, name))
       #for item in deps:
       # self.CompileEnv.Install(destdir, item)
-      #self.CompileEnv.Depends(target, env['GchSh'])  
+      #self.CompileEnv.Depends(target, env['GchSh'])
     else:
       self.CompileEnv.Alias('install', self.CompileEnv.Install(destdir, prg))
       ret = prg

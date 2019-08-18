@@ -8,7 +8,7 @@ import ork.build.common as cmn
 SetOption('implicit_cache',1)
 Decider('MD5-timestamp')
 VariantDir( 'obj', 'src', duplicate=0  )
-SetOption('num_jobs', obu.num_cores) 
+SetOption('num_jobs', obu.num_cores)
 
 #
 TARGET = string.join(COMMAND_LINE_TARGETS)
@@ -23,18 +23,19 @@ if is_install:
 ##########################################
 
 class orktool:
-  def __init__(self):   
+  def __init__(self):
 
     if is_prep:
       return
 
     BasicEnv = Environment( ENV=os.environ, tools=['default','qt5'] )
     BasicEnv["ENV"]['PKG_CONFIG_PATH'] = '/usr/local/opt/qt5/lib/pkgconfig/'
-    BasicEnv['QT5_AUTOSCAN_STRATEGY'] = 1
+    BasicEnv['QT5_AUTOSCAN'] = 1
+    #BasicEnv['QT5_AUTOSCAN_STRATEGY'] = 1
     os.environ['PKG_CONFIG_PATH'] = '$QT5DIR/lib/pkgconfig'
 
     BasicEnv.EnableQt5Modules(string.split('QtGui QtCore QtWidgets'))
-    
+
     ##########################################
 
     SRC_FOLDERS  = " . manip qtui toolcore ged "
@@ -64,10 +65,10 @@ class orktool:
     #########################
     if prj.IsOsx:
       #print "osx"
-      prj.AddFrameworks("OpenGL QtCore QtGui QtWidgets" )
       prj.AddFrameworks("CoreMIDI CoreAudio AudioUnit AudioToolbox" )
       prj.AddFrameworks("Carbon Foundation ApplicationServices" )
       prj.AddFrameworks("AppKit QuartzComposer")
+      prj.AddFrameworks("OpenGL QtCore QtGui QtWidgets" )
     #########################
     ## IX libs
     #########################
@@ -83,6 +84,8 @@ class orktool:
     prj.AddLibsWithSuffix( "libtweakout" )
     prj.AddLibsWithSuffix( "ork.unittestpp" )
     #########################
+    prj.mocfiles["inc/orktool/ged/ged.h"]='obj/ged/moc_ged_textedit.cpp'
+    prj.mocfiles["inc/orktool/qtui/qtapp.h"]='obj/qtui/moc_qtapp.cpp'
     prj.Configure()
     self.tool_lib = prj.SharedLibrary( )
 
@@ -116,4 +119,3 @@ if False==is_prep:
 Return('ret')
 
 ##########################################
-

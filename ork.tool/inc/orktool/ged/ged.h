@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <orktool/orktool_pch.h>
+#include <orktool/qtui/qtui_tool.h>
 ///////////////////////////////////////////////////////////////////////////////
 #include <ork/object/AutoConnector.h>
 #include <ork/kernel/string/ArrayString.h>
@@ -53,7 +55,7 @@ class PersistantMap : public ork::Object
 	RttiDeclareConcrete(PersistantMap,ork::Object);
 
 	orklut<std::string,std::string>	mProperties;
-	
+
 public:
 
 	const std::string& GetValue( const std::string& key );
@@ -100,10 +102,10 @@ public:
 	GedWidget* GetGedWidget() const { return mpGedWidget; }
 	ObjModel();
     /*virtual*/ ~ObjModel();
-	
+
 	void SetChoiceManager( CChoiceManager* chcman ) { mChoiceManager=chcman; }
 	CChoiceManager* GetChoiceManager( void ) const { return mChoiceManager; }
-	
+
 	void Dump(const char* header) const;
 
 	void QueueObject( ork::Object* obj ) { mQueueObject=obj; }
@@ -159,7 +161,7 @@ private:
 	DeclarePublicAutoSlot( Repaint );
 
 	reflect::IInvokation*											mModelInvalidatedInvoker;
-	
+
 public:
 	void SigModelInvalidated();
 	void SigPreNewObject();
@@ -210,14 +212,14 @@ public:
 class GedObject;
 class GedVP;
 
-class GedSkin 
+class GedSkin
 {
 
 public:
 
 	typedef void (*DrawCB)(GedSkin*pskin,GedObject*pnode,ork::lev2::GfxTarget* pTARG);
 
-	struct GedPrim 
+	struct GedPrim
 	{
 		DrawCB						mDrawCB;
 		GedObject*					mpNode;
@@ -309,7 +311,7 @@ protected:
 		int iry1 = iy1+miScrollY;
 		int iry2 = iy2+miScrollY;
 		int ih = pTARG->GetH();
-		
+
 		if( iry2<0 )
 		{
 			miRejected++;
@@ -337,7 +339,7 @@ protected:
 	int									miD;
 	int									miDecoIndex;
 
-	GedObject() 
+	GedObject()
 		: miD(0)
 		, miDecoIndex(0)
 	{}
@@ -386,7 +388,7 @@ public:
 	int get_charh() const;
 	int get_charw() const;
 	int get_text_center_y() const;
-	
+
 	///////////////////////////////////////////////////
 
 	GedItemNode(	ObjModel& mdl,
@@ -416,7 +418,7 @@ public:
 
 	int height() const { return micalch; }
 	int width() const { return miW; }
-	
+
 	virtual void Layout( int ix, int iy, int iw, int ih );
 	virtual bool CanSideBySide() const { return false; }
 	virtual bool DoDrawDefault() const; // { return true; }
@@ -432,7 +434,7 @@ public:
 	int LabelCenterX() const { return miX+(miW>>1)-(GetLabelWidth()>>1); }
 	int NameCenterX() const { return miX+(miW>>1)-(GetNameWidth()>>1); }
 	///////////////////////////////////////////////////
-	void AddItem( GedItemNode*w ); 
+	void AddItem( GedItemNode*w );
 	GedItemNode* GetItem( int idx ) const;
 	int GetNumItems() const;
 	GedItemNode* GetParent() const { return mParent; }
@@ -492,7 +494,7 @@ class GedRootNode : public GedItemNode
 
 public:
 	GedRootNode(	ObjModel& mdl, const char* name, const reflect::IObjectProperty* prop, ork::Object* obj );
-	bool DoDrawDefault() const { return false; } // virtual 
+	bool DoDrawDefault() const { return false; } // virtual
 };
 ///////////////////////////////////////////////////////////////////////////////
 class GedGroupNode : public GedItemNode
@@ -503,15 +505,15 @@ class GedGroupNode : public GedItemNode
 	ork::file::Path::NameType	mPersistID;
 
 public:
-	
-	GedGroupNode(	ObjModel& mdl, 
+
+	GedGroupNode(	ObjModel& mdl,
 					const char* name,
 					const reflect::IObjectProperty* prop,
 					ork::Object* obj,
 					bool is_obj_node=false );
 
 	void CheckVis();
-	bool DoDrawDefault() const { return false; } // virtual 
+	bool DoDrawDefault() const { return false; } // virtual
 	bool mIsObjNode;
 };
 ///////////////////////////////////////////////////////////////////////////////
@@ -536,7 +538,7 @@ class GedWidget : public ork::AutoConnector
 	int							miSkin;
 	bool						mbDeleteModel;
 
-	void ComputeStackHash(); 
+	void ComputeStackHash();
 
 	//////////////////////////////////////////////////////////////
 
@@ -576,7 +578,7 @@ public:
 	int GetRootHeight() const { return miRootH; }
 
 	void SetViewport( GedVP* pvp ) { mViewport=pvp; }
-	U64 GetStackHash() const; 
+	U64 GetStackHash() const;
 
 	GedVP* GetViewport() const { return mViewport; }
 	GedSkin* GetSkin();
@@ -588,7 +590,7 @@ public:
 class GedVP : public ui::Surface
 {
 public:
-	
+
 	friend class lev2::CPickBuffer<GedVP>;
 
     uint32_t AssignPickId(GedObject*pobj);
@@ -609,7 +611,7 @@ private:
 	void DoSurfaceResize() override;
 	ui::HandlerResult DoOnUiEvent( const ui::Event& EV ) override;
 	void DoInit( lev2::GfxTarget* pt ) override;
-	
+
 	ObjModel&						mModel;
 	GedWidget						mWidget;
 	GedObject*						mpActiveNode;

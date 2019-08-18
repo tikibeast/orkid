@@ -9,11 +9,12 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QTimer>
+#include <QtWidgets/QApplication>
 
 namespace ork { namespace tool {
 
 class OrkQtApp : public QApplication
-{	
+{
     Q_OBJECT
 
 public:
@@ -25,6 +26,8 @@ public slots:
     void OnTimer();
 
     ///////////////////////////////////
+
+public:
 
 	QTimer				mIdleTimer;
 	QMainWindow*		mpMainWindow;
