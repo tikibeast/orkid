@@ -38,9 +38,9 @@ void MainWinDefaultModule::Activate( QMenuBar* qmb )
 {
 	mMenuBar = qmb;
 
-	AddAction( "/Scene/NewScene"  ,QKeySequence(tr("Ctrl+N")) );
-	AddAction( "/Scene/OpenScene" ,QKeySequence(tr(HotKeyManager::GetAcceleratorCode("open").c_str())));
-	AddAction( "/Scene/SaveScene" ,QKeySequence(tr(HotKeyManager::GetAcceleratorCode("save").c_str())));
+	AddAction( "/Scene/NewScene"  ,QKeySequence(Qt::CTRL + Qt::Key_N) );
+	AddAction( "/Scene/OpenScene" ,QKeySequence(Qt::CTRL + Qt::Key_O));
+	AddAction( "/Scene/SaveScene" ,QKeySequence(Qt::CTRL + Qt::Key_S));
 	AddAction( "/Scene/ExportArchetype" );
 	AddAction( "/Scene/ImportArchetype" );
 
@@ -52,10 +52,10 @@ void MainWinDefaultModule::Activate( QMenuBar* qmb )
 	AddAction( "/View/SaveLayout" );
 	AddAction( "/View/LoadLayout" );
 
-	AddAction( "/Game/Local/Run", QKeySequence(tr("Ctrl+.")) );
+	AddAction( "/Game/Local/Run", QKeySequence(Qt::CTRL + Qt::Key_Period) );
 	AddAction( "/Game/Local/Stop", QKeySequence(tr("Ctrl+,")) );
 
-	AddAction( "/Entity/New Entity" ,QKeySequence(tr("Ctrl+E")) );
+	AddAction( "/Entity/New Entity" ,QKeySequence(Qt::CTRL + Qt::Key_Comma) );
 	AddAction( "/Entity/New Entities..." ,QKeySequence(tr("Ctrl+Shift+E")) );
 	AddAction( "/Entity/Group" );
 

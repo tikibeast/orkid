@@ -86,6 +86,7 @@ class orktool:
     #########################
     prj.mocfiles["inc/orktool/ged/ged.h"]='obj/ged/moc_ged_textedit.cpp'
     prj.mocfiles["inc/orktool/qtui/qtapp.h"]='obj/qtui/moc_qtapp.cpp'
+    prj.mocfiles["inc/orktool/qtui/qtmainwin.h"]='obj/qtui/moc_qtmainwin.cpp'
     prj.Configure()
     self.tool_lib = prj.SharedLibrary( )
 

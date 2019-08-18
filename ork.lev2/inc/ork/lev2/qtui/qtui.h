@@ -7,7 +7,7 @@
 
 #include <ork/orkconfig.h>
 
-#pragma once 
+#pragma once
 
 #if defined( ORK_CONFIG_QT )
 
@@ -16,7 +16,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 extern int QtTest( int argc, char **argv );
-#define register 
+#define register
 
 ///////////////////////////////////////////////////////////////////////////////
 #include <QtWidgets/QApplication>
@@ -36,8 +36,9 @@ extern int QtTest( int argc, char **argv );
 #include <QtWidgets/QSplashScreen>
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QOpenGLWidget>
 
-#undef register 
+#undef register
 
 #include <ork/lev2/ui/event.h>
 
@@ -48,8 +49,8 @@ extern int QtTest( int argc, char **argv );
 struct SmtFinger;
 typedef struct SmtFinger MtFinger;
 
-namespace ork { 
-	
+namespace ork {
+
 std::string TypeIdNameStrip( const char * name );
 std::string TypeIdName(const std::type_info*ti);
 
@@ -77,12 +78,12 @@ protected:
 	TouchRecieverIMPL	mTouchReciver;
 
 public:
-	
+
 	void Enable() { mbEnabled=true; }
 	bool IsEnabled() const { return mbEnabled; }
 
     virtual bool event(QEvent* event);
-	
+
 	void OnTouchBegin( const MtFinger* pfinger );
 	void OnTouchUpdate( const MtFinger* pfinger );
 	void OnTouchEnd( const MtFinger* pfinger );
@@ -114,17 +115,17 @@ public:
 
 	QCtxWidget( CTQT* pctxbase, QWidget* parent );
 	~QCtxWidget();
-    
+
 	ui::MultiTouchPoint mMultiTouchTrackPoints[ui::Event::kmaxmtpoints];
 
 
 private:
 
 	void SendOrkUiEvent();
-	
+
 };
 
-class CTQT : public CTXBASE 
+class CTQT : public CTXBASE
 {
 	friend class QCtxWidget;
 
@@ -137,7 +138,7 @@ class CTQT : public CTXBASE
 	QWidget*		mParent;
 	int				mDrawLock;
 
-    void SlotRepaint() final; 
+    void SlotRepaint() final;
 
 public:
 
@@ -170,7 +171,7 @@ class CQtGfxWindow : public ork::lev2::GfxWindow
 
 	bool			mbinit;
 	ui::Widget*	    mRootWidget;
-	
+
 	CQtGfxWindow( ui::Widget* root_widget );
 	~CQtGfxWindow();
 
@@ -238,10 +239,10 @@ class CQNoMocBase
 	};
 
 	CQNoMocBase*						mPrevMocBase;
-	
+
 	static CQNoMocBase*& GetPreMainMocBaseIter();
 
-	void MocInit( void ); 
+	void MocInit( void );
 	void Compile( void );
 	void Link( void );
 

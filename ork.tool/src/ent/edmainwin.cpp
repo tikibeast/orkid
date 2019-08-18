@@ -135,6 +135,8 @@ EditorMainWindow::EditorMainWindow(QWidget *parent, const std::string& applicati
 	, ConstructAutoSlot(PostNewObject)
 	, ConstructAutoSlot(SceneInstInvalidated)
 {
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+
 	SetupSignalsAndSlots();
 
 	//////////////////////////////////
@@ -150,7 +152,7 @@ EditorMainWindow::EditorMainWindow(QWidget *parent, const std::string& applicati
 	defaultconfig.AddHotKey( "camera_x", "x" );
 	defaultconfig.AddHotKey( "camera_y", "y" );
 	defaultconfig.AddHotKey( "camera_z", "z" );
-	
+
 	defaultconfig.AddHotKey( "camera_rotl", "num4" );
 	defaultconfig.AddHotKey( "camera_rotr", "num6" );
 	defaultconfig.AddHotKey( "camera_rotu", "num8" );
@@ -161,14 +163,14 @@ EditorMainWindow::EditorMainWindow(QWidget *parent, const std::string& applicati
 	defaultconfig.AddHotKey( "camera_out", "num1" );
 	defaultconfig.AddHotKey( "camera_up", "num9" );
 	defaultconfig.AddHotKey( "camera_down", "num3" );
-	
+
 	defaultconfig.AddHotKey( "camera_aper-", "[" );
 	defaultconfig.AddHotKey( "camera_aper+", "]" );
 
 	defaultconfig.AddHotKey( "camera_origin", "o" );
 	defaultconfig.AddHotKey( "camera_pick2focus", "p" );
 	defaultconfig.AddHotKey( "camera_focus2pick", "f" );
-	
+
 	defaultconfig.AddHotKey( "camera_mouse_dolly", "alt-mmb-none" );
 	defaultconfig.AddHotKey( "camera_mouse_rot", "alt-lmb-none" );
 
@@ -211,11 +213,11 @@ EditorMainWindow::EditorMainWindow(QWidget *parent, const std::string& applicati
 	object::Connect(	& mEditorBase.SelectionManager().GetSigClearSelection(),
 						& this->GetSlotClearSelection() );
 
-	bool bconOK = object::Connect(	& mEditorBase, AddPooledLiteral("SigObjectDeleted"), 
+	bool bconOK = object::Connect(	& mEditorBase, AddPooledLiteral("SigObjectDeleted"),
 									& mDataflowEditor, AddPooledLiteral("SlotClear"));
 	OrkAssert(bconOK);
 
-	bconOK = object::Connect(		& mEditorBase, AddPooledLiteral("SigNewScene"), 
+	bconOK = object::Connect(		& mEditorBase, AddPooledLiteral("SigNewScene"),
 									& mDataflowEditor, AddPooledLiteral("SlotClear"));
 	OrkAssert(bconOK);
 
@@ -225,11 +227,11 @@ EditorMainWindow::EditorMainWindow(QWidget *parent, const std::string& applicati
 	OrkAssert(bconOK);
 
 	////////////////////////////////////
-	
+
 	auto genviewblk = [=]()
 	{
 		QDockWidget *pdw0 = NewCamView(false);
-		SceneObjPropEdit();		
+		SceneObjPropEdit();
 
 		#if 0 //defined(ORK_OSX)
 		if( gPythonEnabled )
@@ -285,17 +287,17 @@ EditorMainWindow::EditorMainWindow(QWidget *parent, const std::string& applicati
 		bool bOK = container.DeserializeInPlace(iser);
 		OrkAssert(bOK);
 	}
-	
+
 	////////////////////////////////////////////////
 
 //	mApplicationModelObj.EnablePaint();
 
 	mGedModelObj.EnablePaint();
-	
+
 	LoadLayout();
 
 	this->activateWindow();
-	
+
 /*	auto lamb = [=]()
 	{
 		this->SlotSpawnNewGed( ork::Application::GetContext() );
@@ -390,7 +392,7 @@ void EditorMainWindow::ArchMakeLocal()
 }
 ///////////////////////////////////////////////////////////////////////////
 void EditorMainWindow::NewEntity()
-{	
+{
 	NewEntityReq ner;
 	mEditorBase.QueueOpASync(ner);
 }
@@ -442,7 +444,7 @@ void EditorMainWindow::AddBuiltInActions()
 	//QWidget* pqw = pctqt->GetQWidget();
 
 	//gfxdock->setWidget( pqw );
-	
+
 	//gfxdock->setMinimumSize( 256, 128 );
 	//gfxdock->resize( 256, 256 );
 	//addDockWidget(Qt::LeftDockWidgetArea, gfxdock);
@@ -477,7 +479,7 @@ void EditorMainWindow::LoadLayout()
     settings.beginGroup("mainWindow");
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("state").toByteArray());
-    settings.endGroup();	
+    settings.endGroup();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -495,7 +497,7 @@ static void ReplaceArchetype(	ent::SceneData* pscene,
 	{	ent::SceneObject* pso = it->second;
 		ent::EntData* ped = rtti::autocast( pso );
 		if( ped )
-		{	
+		{
 			if( ped->GetArchetype() == old_arch )
 			{
 				EntDatas.insert(std::pair<PoolString,ent::EntData*>(it->first,ped));
@@ -523,7 +525,7 @@ class EntArchDeRef : public ork::tool::ged::IOpsDelegate
 public:
 
 	EntArchDeRef() {}
-	~EntArchDeRef() {}	
+	~EntArchDeRef() {}
 
 	void Execute( ork::Object* ptarget ) final
     {	SetProgress(0.0f);
@@ -563,7 +565,7 @@ class EntArchReRef : public ork::tool::ged::IOpsDelegate
 public:
 
 	EntArchReRef() {}
-	~EntArchReRef() {}	
+	~EntArchReRef() {}
 
 
 	template <typename T> void find_and_replace( T& source, const T& find, const T& replace )
@@ -594,7 +596,7 @@ public:
 		ent::EntData* pentdata = rtti::autocast( ptarget );
 		if( 0 != pentdata )
 		{	const ent::Archetype* parch = pentdata->GetArchetype();
-			if( 0 != parch ) 
+			if( 0 != parch )
 			{	const ent::ReferenceArchetype* prefarch = rtti::autocast( parch );
 				if( 0 != prefarch )
 				{	ent::SceneData* pscene = parch->GetSceneData();
@@ -626,7 +628,7 @@ public:
 						gEditorMainWindow->mEditorBase.mpArchChoices->EnumerateChoices();
 						gEditorMainWindow->mEditorBase.mpRefArchChoices->EnumerateChoices(true);
 						/////////////////////////////////////////////////////////////////////
-						ArchetypeAsset* passet = 
+						ArchetypeAsset* passet =
 							asset::AssetManager<ArchetypeAsset>::Load( assetname.c_str() );
 						ent::ReferenceArchetype* newrefarch = new ent::ReferenceArchetype;
 						newrefarch->SetAsset( passet );
@@ -655,7 +657,7 @@ class EntArchSplit : public ork::tool::ged::IOpsDelegate
 public:
 
 	EntArchSplit() {}
-	~EntArchSplit() {}	
+	~EntArchSplit() {}
 
 	void Execute( ork::Object* ptarget ) final
     {
